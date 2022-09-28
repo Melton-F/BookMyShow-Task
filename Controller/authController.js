@@ -37,6 +37,7 @@ const login = catchAsync(async(req, res, next)=>{
             //or
     //const email = req.body.email
     //const password = req.body.password
+    // console.log(password);
 
     //1)to check the email and password entered(exist) if not then moving to next with msg
     if(!email || !password){
@@ -45,21 +46,36 @@ const login = catchAsync(async(req, res, next)=>{
 
     //2)check if the user exists & password is correct
     const user = await User.findOne({ email }).select('+password')
-    const correct = await user.correctPassword(password, user.password)
+    // console.log(user.password)
+    // const correct = await user.correctPassword(password, user.password)
 
     //if there is no user and if there is a wrong password ==> moving to the AppError
-    if(!user || !correct){
-        return next(new AppError('Invalid Email or Password', 401))
-    }
+    // if(!user || !correct){
+    //     return next(new AppError('Invalid Email or Password', 401))
+    // }
 
     //3)if everything alright send token to the user
     // const token = signToken(user._id)
-    res.status(200).json({
-        status:'success',
-        
-    })
+    if(password === user.password){
+        res.status(200).json({
+            message:"WELCOME TO BOOK MY SHOW APP"
+        })
+    }else{
+        // return next(new AppError('Invalid Email or Password', 401))
+        res.status(401).json({
+            message:"Invalid Email or Password"
+        })
+    }
+    
 })
 
+const showUser = async(req, res, next)=>{
+    const user = await User.find().populate('movie')
+    res.status(200).json({
+        user
+    })
+}
+
 module.exports = {
-    signup, login
+    signup, login, showUser
 }

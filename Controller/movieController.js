@@ -19,7 +19,16 @@ const getMoviesById = async(req, res) => {
     }
 };
 
+const createMovies = async(req, res)=>{
+    try{
+        const movies = await Movie.create(req.body)
+        res.send(movies);
+    } catch(e){
+        res.status(500).send({message: e.message})
+    }
+}
+
 
 module.exports = {
-    getMovies, getMoviesById
+    getMovies, getMoviesById, createMovies
 };

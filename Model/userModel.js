@@ -41,12 +41,19 @@ const userSchema = new mongoose.Schema({
             message:'passwords are not same'
         }
     },
+    movieID:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "movie",
+        required: true
+    }
 })
 
-userSchema.methods.correctPassword = async function(candidatePassword, userPassword){
-    //this will reeturn true or false
-    return await bcrypt.compare(candidatePassword, userPassword)
-}
+
+//instance method
+// userSchema.methods.correctPassword = async function(candidatePassword, userPassword){
+//     //this will reeturn true or false
+//     return await bcrypt.compare(candidatePassword, userPassword)
+// }
 
 const User = mongoose.model('User', userSchema)
 module.exports = User

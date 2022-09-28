@@ -5,8 +5,11 @@ const movieController = require('../Controller/movieController')
 
 router.route('/')
     .get(movieController.getMovies)
+    .post(movieController.createMovies)
 
 router.route('/:id')
     .get(movieController.getMoviesById)
 
 module.exports = router
+
+
