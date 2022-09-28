@@ -12,11 +12,14 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:[true, 'Enter your Email'],
         unique:[true, 'mail must be unique'],
-        lowercase:true,
-        validate:[validator.isEmail, 'Please enter a valid Email'] //own validator by installing the validator package
+        // lowercase:true,
+        // validate:[validator.isEmail, 'Please enter a valid Email'] //own validator by installing the validator package
     },
     number:{
         type:Number
+    },
+    isBooked:{
+        
     },
     // photo:{
     //     type:String
@@ -41,11 +44,11 @@ const userSchema = new mongoose.Schema({
             message:'passwords are not same'
         }
     },
-    movieID:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "movie",
-        required: true
-    }
+    // movieID:{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "movie",
+    //     required: true
+    // }
 })
 
 

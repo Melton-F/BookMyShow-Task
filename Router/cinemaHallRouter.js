@@ -4,6 +4,7 @@ const cinemaHallController = require('../Controller/cinemaHallController')
 
 router.route('/')
     .get(cinemaHallController.getCinemas)
+    .post(cinemaHallController.createCinemas)
 
 router.route('/:id')
     .get(cinemaHallController.getCinemasByID)

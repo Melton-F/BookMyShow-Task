@@ -14,7 +14,7 @@ const movieSchema = new mongoose.Schema(
     movie_duration: { type: String, required: true },
     release_date: { type: String, required: true },
     // is_premier: { type: Boolean, required: true },
-    // screen_type: [{ type: { type: String, required: true } }],
+    screen_type: [{ type: { type: String, required: true } }],
     // movie_genre: [{ genre: { type: String, required: true } }],
     about_movie: { type: String, required: true },
     cast: [

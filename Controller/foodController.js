@@ -19,6 +19,14 @@ const getFoodsById = async(req, res) => {
     }
 };
 
+const createFoods = async(req, res)=>{
+    try{
+        const createdFood = await Food.create(req.body)
+        res.send(createdFood)
+    } catch(e){
+        res.status(500).send({message: e.message});
+    }
+}
 module.exports = {
-    getFoods, getFoodsById
+    getFoods, getFoodsById, createFoods
 }

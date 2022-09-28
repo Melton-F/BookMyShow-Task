@@ -18,6 +18,14 @@ const getCinemasByID = async(req, res) => {
     }
 };
 
+const createCinemas = async(req, res)=>{
+        await Cinema.create(req.body).then(createdData =>{
+            res.send(createdData)
+        }).catch(e =>{
+            res.status(500).send({message: e});
+        })
+}
+
 module.exports = {
-    getCinemas, getCinemasByID
+    getCinemas, getCinemasByID, createCinemas
 }
