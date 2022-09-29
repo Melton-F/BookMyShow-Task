@@ -14,25 +14,25 @@ const signToken = (id) => {
   });
 };
 
-exports.signup = catchAsync(async (req, res, next) => {
-  // const newUser = await User.create(req.body)
+// exports.signup = catchAsync(async (req, res, next) => {
+//   // const newUser = await User.create(req.body)
 
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    number: req.body.number,
-    password: req.body.password,
-    cnfrmPassword: req.body.cnfrmPassword,
-  });
+//   const newUser = await User.create({
+//     name: req.body.name,
+//     email: req.body.email,
+//     number: req.body.number,
+//     password: req.body.password,
+//     cnfrmPassword: req.body.cnfrmPassword,
+//   });
 
-  const token = signToken(newUser._id);
+//   const token = signToken(newUser._id);
 
-  res.status(201).json({
-    status: "Success",
-    token,
-    data: newUser,
-  });
-});
+//   res.status(201).json({
+//     status: "Success",
+//     token,
+//     data: newUser,
+//   });
+// });
 
 // exports.login = catchAsync(async (req, res, next) => {
   // const { email, password } = req.body;
@@ -71,7 +71,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 // });
 
 exports.showUser = async (req, res, next) => {
-  const user = await User.find().populate("movie");
+  const user = await User.find();
   res.status(200).json({
     user,
   });
@@ -127,7 +127,7 @@ exports.register = async (req, res, next) => {
   }
 };
 
-exports.activateAccount = catchAsync ( async (req, res, next) => {
+exports.activateAccountByOTP = catchAsync ( async (req, res, next) => {
   const otp = req.body.Otp * 1; //typeCasting
   
   const checkOtpIsValid = await Otp.findOne({
@@ -143,6 +143,22 @@ exports.activateAccount = catchAsync ( async (req, res, next) => {
     status: 'successfully otp verified',
   });
 })
+
+exports.EmailVerify = catchAsync(async (req, res, next) => {
+  const isEmailVerified = await Otp.findOne({
+    email: req.body.email,
+    isAuthenticated: true,
+  });
+  console.log(isEmailVerified);
+  if (!isEmailVerified) {
+    return next(new AppError('Email is not verified', 400));
+  }
+
+  return res.status(201).json({
+    status: 'success',
+    data: 'Verified.Please login',
+  });
+});
 
 
 exports.login = catchAsync(async (req, res, next) => {
