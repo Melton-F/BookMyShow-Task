@@ -13,7 +13,6 @@ const otpSchema = new mongoose.Schema(
             type:Number,
             required: [true, "Otp is required"],
             min:4,
-            max:4
         },
         isAuthenticated:{
             type:Boolean,

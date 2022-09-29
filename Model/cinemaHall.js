@@ -17,19 +17,7 @@ const cinemaSchema = new mongoose.Schema(
         movie:String,
         available_tickets:Number,
         booked_tickets:Number
-      },
-      {
-        screen_no:Number,
-        movie:String,
-        available_tickets:Number,
-        booked_tickets: Number
-      },
-      {
-        screen_no:Number,
-        movie:String,
-        available_tickets:Number,
-        booked_tickets: Number
-      },
+      }
     ]
   }
 );
