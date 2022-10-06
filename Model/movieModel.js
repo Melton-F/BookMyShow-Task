@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const movieSchema = new mongoose.Schema(
   {
-    movie_name: [{ type: String, required: true }],
+    movie_name: { type: String, required: true },
     // movie_grade: { type: String, required: true },
     // languages: { type: String, required: true },
     // banner_image_url: { type: String, required: true },
@@ -17,11 +17,11 @@ const movieSchema = new mongoose.Schema(
     // screen_type: [{ type: { type: String, required: true } }],
     // movie_genre: [{ genre: { type: String, required: true } }],
     about_movie: { type: String, required: true },
-    theatre:{
+    theatre:[{type: mongoose.Schema.Types.ObjectId, ref:"CinemaHall"}],
+    user:[{
       type: mongoose.Schema.Types.ObjectId,
-      ref:"CinemaHall",
-      required:true
-    }
+      ref:"User"
+    }]
     // cast: [
     //   {
     //     original_name: { type: String, required: true },

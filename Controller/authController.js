@@ -62,7 +62,7 @@ const signToken = (id) => {
 //     res.status(200).json({
 //       message: "WELCOME TO BOOK MY SHOW APP",
 //     });
-//   } else {
+//   } else {meaning
 //     // return next(new AppError('Invalid Email or Password', 401))
 //     res.status(401).json({
 //       message: "Invalid Email or Password",

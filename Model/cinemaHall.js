@@ -5,19 +5,32 @@ const cinemaSchema = new mongoose.Schema(
     name: { type: String, required: true },
     // sub_region: { type: String, required: true },
     // cancellation_availab: { type: Boolean, required: true },
-    timings: [
-      { 
-        time: { type: String, required: true } 
-      }
-    ],
-    screens:[
-      {
-        screen_no:Number,
-        movie:String,
-        available_tickets:Number,
-        booked_tickets:Number
-      }
-    ]
+    users:[{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'User',
+      // required:true
+    }],
+    movies:[{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'movie',
+      required:true
+    }],
+    timings:
+    {
+      type: String, 
+      required: true 
+    },
+    // screens:
+    //   {
+    //     screen_no:Number,
+    //     movie:[{
+    //       type:mongoose.Schema.Types.ObjectId,
+    //       ref:'movie',
+    //       // required:true
+    //     }],
+    //     available_tickets:Number,
+    //     booked_tickets:Number
+    //   }
   }
   // { versionKey: false, timestamps: true }
 //   {
@@ -33,7 +46,6 @@ const cinemaSchema = new mongoose.Schema(
 //     ]
 //   }
 );
-
 const Cinema = mongoose.model("CinemaHall", cinemaSchema);
 
-module.exports = Cinema; //theaters la movie vaenum
+module.exports = Cinema; //theaters la movie vaenum 

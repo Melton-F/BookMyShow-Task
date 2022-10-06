@@ -8,5 +8,6 @@ router.route('/')
 
 router.route('/:id')
     .get(cinemaHallController.getCinemasByID)
+    .delete(cinemaHallController.deleteTheatre)
 
 module.exports = router

@@ -3,7 +3,11 @@ const Cinema = require('../Model/cinemaHall');
 const getCinemas = async(req, res) => {
     try{
         const cinemas = await Cinema.find().lean().exec();
-        res.send(cinemas);
+        if(cinemas<1){
+            res.send("nahi data")
+        }else{
+            res.send(cinemas);
+        }
     } catch(e){
         res.status(500).send({message: e.message});
     }
@@ -26,6 +30,14 @@ const createCinemas = async(req, res)=>{
         })
 }
 
+const deleteTheatre = async(req, res)=>{
+    await Cinema.findByIdAndRemove(req.params.id).then(()=>{
+        res.status(200).json({
+            message:"theatre deleted successfully"
+        })
+    })
+}
+
 module.exports = {
-    getCinemas, getCinemasByID, createCinemas
+    getCinemas, getCinemasByID, createCinemas, deleteTheatre
 }
