@@ -98,6 +98,8 @@ const updateUsersInTheatre = async(req, res)=>{
             // console.log(response);
             const toFindmailOfUser = await User.findById(req.body.user)
             console.log('the users mail check', toFindmailOfUser.email)
+            const movie = await Movie.findById(req.params.id)
+            console.log(movie.user.length);
             if(response){
                 const transporter = nodemailer.createTransport({
                     service:'gmail',
@@ -107,13 +109,12 @@ const updateUsersInTheatre = async(req, res)=>{
                     }
                 })
 
-                // const movie = await Movie.findById(req.params.id)
-                // console.log(movie);
                 const mailDetails = {
                     from:'meltonmeni619@gmail.com',
                     to:toFindmailOfUser.email,
                     subject:'Ticket for BookMyShow',
-                    text:'Your tickets booked kindly arrive on time otherwise seat vera yaarukavathu maatra padum'
+                    html: `<h1>Here the ticket details</h1> <br> <h4>MOVIE : ${movie.movie_name}</h4> <h4>TOTAL SEATS IN THEATRE : ${noOfSeatsInTheatre}</h4> <h4>SEAT NO : ${movie.user.length}</h4> <p>'Hurraayyyyy....!!! Your tickets booked. kindly arrive on time otherwise seat vera yaarukavathu maatra padum'</p>`
+                    // text: `hi`
                 }
 
                 transporter.sendMail(mailDetails, (err, info)=>{
