@@ -3,11 +3,12 @@ const Theatre = require('../Model/cinemaHall');
 const User = require('../Model/userModel')
 const { findById, remove } = require("../Model/cinemaHall");
 const { response } = require("express");
+const nodemailer = require("nodemailer");
 
 // To fetch all the movies in the theatre
 const getMovies = async(req, res) => {
     try{
-        const movies = await Movie.find().populate('theatre', 'name').populate('user', 'name').lean().exec();
+        const movies = await Movie.find().populate('theatre', 'name').populate('user', 'name email').lean().exec();
         res.send(movies);
     } catch(e){
         res.status(500).send({message: e.message});
@@ -68,7 +69,7 @@ const updateTheatreInMovies = async(req, res)=>{
                 response
             })
         })
-        // const updationInMovies = await Movie.findByIdAndUpdate(req.params.id, )
+        // const updationInMovies = await Movie.findByIdAndUpdat63345662c4ca5fd18ce354cde(req.params.id, )
     } catch(e){
         res.status(500).send({message: e.message})
     }
@@ -80,7 +81,7 @@ const updateUsersInTheatre = async(req, res)=>{
         const needUpdateMovieId = await Movie.findById(req.params.id)
         console.log('req.params.id: ', needUpdateMovieId);
         const lengthOfSeatsBooked = needUpdateMovieId.user.length + 1
-        const noOfSeatsInTheatre = 4
+        const noOfSeatsInTheatre = 30
         if(lengthOfSeatsBooked>noOfSeatsInTheatre){
             return res.status(404).json({
                 total_seats_In_Theatre : noOfSeatsInTheatre,
@@ -90,16 +91,49 @@ const updateUsersInTheatre = async(req, res)=>{
         }
         const userUpdate = await User.findById(req.body.user)
         let userInArray = needUpdateMovieId.user
-        console.log(userInArray)
+        // console.log(userInArray)
         userInArray.push(userUpdate)
-        console.log(userInArray);
-        Movie.findByIdAndUpdate(req.params.id, {user: userInArray}, {new: true}).then(response =>{
-            console.log(response);
-            res.status(200).json({
-                message:"Seat booked",
-                total_no_of_seats_in_theatre: noOfSeatsInTheatre,
-                no_of_seatsBooked: lengthOfSeatsBooked
-            })
+        // console.log(userInArray);
+        Movie.findByIdAndUpdate(req.params.id, {user: userInArray}, {new: true}).then(async response =>{
+            // console.log(response);
+            const toFindmailOfUser = await User.findById(req.body.user)
+            console.log('the users mail check', toFindmailOfUser.email)
+            if(response){
+                const transporter = nodemailer.createTransport({
+                    service:'gmail',
+                    auth:{
+                        user:'meltonmeni619@gmail.com',
+                        pass:'swdq szzp hhng dmzd'
+                    }
+                })
+
+                // const movie = await Movie.findById(req.params.id)
+                // console.log(movie);
+                const mailDetails = {
+                    from:'meltonmeni619@gmail.com',
+                    to:toFindmailOfUser.email,
+                    subject:'Ticket for BookMyShow',
+                    text:'Your tickets booked kindly arrive on time otherwise seat vera yaarukavathu maatra padum'
+                }
+
+                transporter.sendMail(mailDetails, (err, info)=>{
+                    if(err){
+                        console.log(err);
+                        res.send('ticket not booked')
+                    } else{
+                        // res.send('email sent')
+                        res.status(200).json({
+                            message:"Seat booked",
+                            total_no_of_seats_in_theatre: noOfSeatsInTheatre,
+                            no_of_seatsBooked: lengthOfSeatsBooked
+                        })
+                        // console.log(info)
+                    }
+                })
+            }
+            else{
+                return res.send('ticket not booked')
+            }
             // const lengthOfSeatsBooked = response.user.length
             // const noOfSeatsInTheatre = 4
             // if(lengthOfSeatsBooked>noOfSeatsInTheatre){

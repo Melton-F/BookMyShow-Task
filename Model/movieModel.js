@@ -22,20 +22,6 @@ const movieSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref:"User"
     }]
-    // cast: [
-    //   {
-    //     original_name: { type: String, required: true },
-    //     character: { type: String, required: true },
-    //     // cast_image: { type: String, required: true },
-    //   },
-    // ],
-    // crew: [
-    //   {
-    //     name: { type: String, required: true },
-    //     // crew_position: { type: String, required: true },
-    //     // crew_image: { type: String, required: true },
-    //   },
-    // ],
   },
   {timestamps: true }
 );
