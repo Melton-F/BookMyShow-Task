@@ -1,9 +1,10 @@
 const Movie = require("../Model/movieModel");
 const Theatre = require('../Model/cinemaHall');
 const User = require('../Model/userModel')
-const { findById, remove } = require("../Model/cinemaHall");
-const { response } = require("express");
-const nodemailer = require("nodemailer");
+// const { findById, remove } = require("../Model/cinemaHall");
+// const { response } = require("express");
+// const nodemailer = require("nodemailer");
+const sendEmail = require('../utils/sendMail')
 
 // To fetch all the movies in the theatre
 const getMovies = async(req, res) => {
@@ -48,7 +49,7 @@ const createMovies = async(req, res)=>{
 // To delete the movie by its ID
 const deleteMoviebyID = async(req, res)=>{
     try{
-        const deleteMovies = await Movie.findByIdAndRemove(req.params.id)
+        const deleteMovies = await Movie.findByIdAndRemove(req.params.id) //here variable id is mentioned in the router
         res.send("movie deleted by ID successfully")
     } catch(e){
         res.status(500).send({message: e.message})
@@ -101,51 +102,30 @@ const updateUsersInTheatre = async(req, res)=>{
             const movie = await Movie.findById(req.params.id)
             console.log(movie.user.length);
             if(response){
-                const transporter = nodemailer.createTransport({
-                    service:'gmail',
-                    auth:{
-                        user:'meltonmeni619@gmail.com',
-                        pass:'swdq szzp hhng dmzd'
-                    }
+                User.findOne({_id:req.body.user}).then(user =>{
+                    const message = `<h1>Here the ticket details</h1> <br> <h4>MOVIE : ${movie.movie_name}</h4> <h4>TOTAL SEATS IN THEATRE : ${noOfSeatsInTheatre}</h4> <h4>YOUR SEAT NO : ${movie.user.length}</h4> <p>'Hurraayyyyy....!!! Your tickets booked. kindly arrive on time otherwise seat vera yaarukavathu maatra padum'</p>`
+                    sendEmail({
+                        email: user.email,
+                        subject: "Ticket for BookMyShow",
+                        message,
+                    });
                 })
 
-                const mailDetails = {
-                    from:'meltonmeni619@gmail.com',
-                    to:toFindmailOfUser.email,
-                    subject:'Ticket for BookMyShow',
-                    html: `<h1>Here the ticket details</h1> <br> <h4>MOVIE : ${movie.movie_name}</h4> <h4>TOTAL SEATS IN THEATRE : ${noOfSeatsInTheatre}</h4> <h4>SEAT NO : ${movie.user.length}</h4> <p>'Hurraayyyyy....!!! Your tickets booked. kindly arrive on time otherwise seat vera yaarukavathu maatra padum'</p>`
-                    // text: `hi`
+                const lengthOfSeatsBooked = response.user.length
+                const noOfSeatsInTheatre = 30
+                if(lengthOfSeatsBooked>noOfSeatsInTheatre){
+                    res.send("OOPS...!!! HouseFull...!!! No seats available :( ")
+                }else{
+                    res.status(200).json({
+                        message:"Seat booked",
+                        total_no_of_seats_in_theatre: noOfSeatsInTheatre,
+                        no_of_seatsBooked: lengthOfSeatsBooked
+                    })
                 }
-
-                transporter.sendMail(mailDetails, (err, info)=>{
-                    if(err){
-                        console.log(err);
-                        res.send('ticket not booked')
-                    } else{
-                        // res.send('email sent')
-                        res.status(200).json({
-                            message:"Seat booked",
-                            total_no_of_seats_in_theatre: noOfSeatsInTheatre,
-                            no_of_seatsBooked: lengthOfSeatsBooked
-                        })
-                        // console.log(info)
-                    }
-                })
             }
             else{
                 return res.send('ticket not booked')
             }
-            // const lengthOfSeatsBooked = response.user.length
-            // const noOfSeatsInTheatre = 4
-            // if(lengthOfSeatsBooked>noOfSeatsInTheatre){
-            //     res.send("OOPS...!!! HouseFull...!!! No seats available :( ")
-            // }else{
-                // res.status(200).json({
-                //     message:"Seat booked",
-                //     total_no_of_seats_in_theatre: noOfSeatsInTheatre,
-                //     no_of_seatsBooked: lengthOfSeatsBooked
-                // })
-            // }
         })
     } catch(e){
         res.status(500).send({message: e.message})

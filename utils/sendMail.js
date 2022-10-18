@@ -16,10 +16,14 @@ const sendEmail = async options => {
                         from: "meltonmeni619@gmail.com",
                         to: options.email,
                         subject: options.subject,
-                        text: options.message
+                        html: options.message
             };
 
-            await transporter.sendMail(mailOptions)
+            await transporter.sendMail(mailOptions, (err, info)=>{
+                if(err){
+                    console.log(err)
+                }
+            })
 }
 
 module.exports = sendEmail;

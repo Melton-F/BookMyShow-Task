@@ -3,72 +3,18 @@ const catchAsync = require("../utils/catchAsync");
 const User = require("../Model/userModel");
 const AppError = require("../utils/appError");
 const Otp = require("../Model/otp");
-const { validationResult } = require("express-validator");
+// const { validationResult } = require("express-validator");
 const sendEmail = require('../utils/sendMail')
+// const bcrypt = require('bcrypt')
 
-const JWT_SECRET = "I-am-a-fan-of-ben10-And-this-is-my-secret-message";
+// const JWT_SECRET = "I-am-a-fan-of-ben10-And-this-is-my-secret-message";
 
-const signToken = (id) => {
-  return jwt.sign({ id: id }, JWT_SECRET, {
-    expiresIn: "90d",
-  });
-};
-
-// exports.signup = catchAsync(async (req, res, next) => {
-//   // const newUser = await User.create(req.body)
-
-//   const newUser = await User.create({
-//     name: req.body.name,
-//     email: req.body.email,
-//     number: req.body.number,
-//     password: req.body.password,
-//     cnfrmPassword: req.body.cnfrmPassword,
+// const signToken = (id) => {
+//   return jwt.sign({ id: id }, JWT_SECRET, {
+//     expiresIn: "90d",
 //   });
+// };
 
-//   const token = signToken(newUser._id);
-
-//   res.status(201).json({
-//     status: "Success",
-//     token,
-//     data: newUser,
-//   });
-// });
-
-// exports.login = catchAsync(async (req, res, next) => {
-  // const { email, password } = req.body;
-  //or
-  //const email = req.body.email
-  //const password = req.body.password
-  // console.log(password);
-
-  //1)to check the email and password entered(exist) if not then moving to next with msg
-  // if (!email || !password) {
-  //   return next(new AppError("Please provide email and password", 400));
-  // }
-
-  //2)check if the user exists & password is correct
-  // const user = await User.findOne({ email }).select("+password");
-  // console.log(user.password)
-  // const correct = await user.correctPassword(password, user.password)
-
-  //if there is no user and if there is a wrong password ==> moving to the AppError
-  // if(!user || !correct){
-  //     return next(new AppError('Invalid Email or Password', 401))
-  // }
-
-  //3)if everything alright send token to the user
-  // const token = signToken(user._id)
-//   if (password === user.password) {
-//     res.status(200).json({
-//       message: "WELCOME TO BOOK MY SHOW APP",
-//     });
-//   } else {meaning
-//     // return next(new AppError('Invalid Email or Password', 401))
-//     res.status(401).json({
-//       message: "Invalid Email or Password",
-//     });
-//   }
-// });
 
 exports.showUser = async (req, res, next) => {
   const user = await User.find();
@@ -84,7 +30,7 @@ exports.register = async (req, res, next) => {
     // console.log(user)
     return next(new AppError("Email already taken", 400));
   }
-
+  // bcrypt.hash()
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -117,8 +63,8 @@ exports.register = async (req, res, next) => {
 
     res.status(200).json({
       status: "success",
-      message: "Token sent to email",
-      newUser,
+      message: "your OTP sent to email",
+      userDetails:newUser,
     });
   } catch (e) {
     console.log(e);
@@ -144,29 +90,9 @@ exports.activateAccountByOTP = catchAsync ( async (req, res, next) => {
   });
 })
 
-exports.EmailVerify = catchAsync(async (req, res, next) => {
-  const isEmailVerified = await Otp.findOne({
-    email: req.body.email,
-    isAuthenticated: true,
-  });
-  console.log(isEmailVerified);
-  if (!isEmailVerified) {
-    return next(new AppError('Email is not verified', 400));
-  }
-
-  return res.status(201).json({
-    status: 'success',
-    data: 'Verified.Please login',
-  });
-});
-
-
+// require('./passport')
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
-  //or
-  //const email = req.body.email
-  //const password = req.body.password
-  // console.log(password);
 
   //1)to check the email and password entered(exist) if not then moving to next with msg
   if (!email || !password) {
@@ -175,20 +101,18 @@ exports.login = catchAsync(async (req, res, next) => {
 
   //2)check if the user exists & password is correct
   const user = await User.findOne({ email }).select("+password");
-  // console.log(user.password)
-  // const correct = await user.correctPassword(password, user.password)
+  const payload = {
+    userName:user.userName,
+    userId: user._id
+  }
+  const token = jwt.sign(payload, "something-secret-to-be-saved-in-the-env", {expiresIn:"1d"})
 
-  //if there is no user and if there is a wrong password ==> moving to the AppError
-  // if(!user || !correct){
-  //     return next(new AppError('Invalid Email or Password', 401))
-  // }
-
-  //3)if everything alright send token to the user
-  // const token = signToken(user._id)
   if (password === user.password) {
-    res.status(200).json({
-      message: "WELCOME TO BOOK MY SHOW APP",
-    });
+    return res.status(200).json({
+      greet:" WELCOME TO BOOKMYSHOWAPP ",
+      message:"successfully logged in.... And here is your token...!!!",
+      token: "Bearer " + token
+    })
   } else {
     // return next(new AppError('Invalid Email or Password', 401))
     res.status(401).json({

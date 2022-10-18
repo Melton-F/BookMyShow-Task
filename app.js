@@ -1,7 +1,13 @@
 const express = require('express')
 const app = express()
+const passport = require('passport')
+
 
 const bodyParser = require('body-parser')
+// app.use(cors())
+app.use(passport.initialize())
+
+// require('./passport')
 
 const userRouter = require('./Router/userRouter')
 const movieRouter = require('./Router/movieRouter')

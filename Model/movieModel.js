@@ -17,7 +17,10 @@ const movieSchema = new mongoose.Schema(
     // screen_type: [{ type: { type: String, required: true } }],
     // movie_genre: [{ genre: { type: String, required: true } }],
     about_movie: { type: String, required: true },
-    theatre:[{type: mongoose.Schema.Types.ObjectId, ref:"CinemaHall"}],
+    theatre:[{
+      type: mongoose.Schema.Types.ObjectId, 
+      ref:"CinemaHall"
+    }],
     user:[{
       type: mongoose.Schema.Types.ObjectId,
       ref:"User"

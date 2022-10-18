@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
-const bcrypt = require('bcryptjs')
+// const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -50,13 +50,6 @@ const userSchema = new mongoose.Schema({
     //     required: true
     // }
 })
-
-
-//instance method
-// userSchema.methods.correctPassword = async function(candidatePassword, userPassword){
-//     //this will reeturn true or false
-//     return await bcrypt.compare(candidatePassword, userPassword)
-// }
 
 const User = mongoose.model('User', userSchema)
 module.exports = User
